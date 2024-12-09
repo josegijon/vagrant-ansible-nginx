@@ -1,0 +1,104 @@
+---
+- name: Update apt cache
+  apt:
+    update_cache: yes
+
+- name: Install required packages
+  apt:
+    name:
+      - nginx
+      - openssl
+      - ufw
+      - snapd
+      - curl
+      - git
+    state: present
+
+- name: Configure UFW
+  ufw:
+    rule: allow
+    name: "{{ item }}"
+  loop:
+    - OpenSSH
+    - "Nginx Full"
+
+- name: Enable UFW
+  ufw:
+    state: enabled
+
+- name: Create web directory
+  file:
+    path: /var/www/mi_web/html
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0755'
+
+- name: Copy Nginx site configuration
+  template:
+    src: mi_web.conf.j2
+    dest: /etc/nginx/sites-available/mi_web
+  notify: Restart Nginx
+
+- name: Copy web files
+  copy:
+    src: "{{ item }}"
+    dest: /var/www/mi_web/html/
+  loop:
+    - 404.html
+    - index.html
+    - admin.html
+    - style.css
+    - style-error.css
+    - img.jpg
+    - logo.png
+
+- name: Generate SSL certificate
+  command: >
+    openssl req -x509 -nodes -days 365
+    -newkey rsa:2048 -keyout /etc/ssl/private/mi_web.key
+    -out /etc/ssl/certs/mi_web.crt
+    -subj "/C=ES/ST=Andalucía/L=Granada/O=IZV/OU=WEB/CN=mi_web/emailAddress=webmaster@mi_web.com"
+  args:
+    creates: /etc/ssl/certs/mi_web.crt
+
+- name: Enable Nginx site
+  file:
+    src: /etc/nginx/sites-available/mi_web
+    dest: /etc/nginx/sites-enabled/mi_web
+    state: link
+  notify: Restart Nginx
+
+- name: Install Ngrok
+  shell: |
+    curl -sSL https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null
+    echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list
+    sudo apt update
+    sudo apt install -y ngrok
+  args:
+    creates: /usr/local/bin/ngrok
+
+- name: Configure Ngrok
+  command: ngrok config add-authtoken 2poBJtFZbhN8ful59xHY1Eqh3nH_3jM5sE5zwAeqrSjUBtzyv
+  args:
+    creates: /root/.ngrok2/ngrok.yml
+
+- name: Start Ngrok
+  shell: nohup ngrok http --url=albacore-select-marmoset.ngrok-free.app 443 &
+  async: 0
+  poll: 0
+
+- name: Create .htpasswd files
+  shell: |
+    echo -n 'admin:' >> /etc/nginx/.htpasswd_admin
+    echo "$(openssl passwd -apr1 'asir')" >> /etc/nginx/.htpasswd_admin
+    echo -n 'sysadmin:' >> /etc/nginx/.htpasswd_status
+    echo "$(openssl passwd -apr1 'risa')" >> /etc/nginx/.htpasswd_status
+  args:
+    creates: /etc/nginx/.htpasswd_admin
+
+- name: Install Netdata
+  shell: |
+    curl -sSL https://my-netdata.io/kickstart.sh | bash -s -- --dont-wait
+  args:
+    creates: /usr/sbin/netdata

@@ -1,0 +1,51 @@
+server {
+  listen 80;
+  listen 443 ssl;
+
+  server_name mi_web www.mi_web;
+  root /var/www/mi_web/html;
+
+  ssl_certificate /etc/ssl/certs/mi_web.crt;
+  ssl_certificate_key /etc/ssl/private/mi_web.key;
+  
+  ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3;
+  ssl_ciphers HIGH:!aNULL:!MD5;
+
+  location / {
+    try_files $uri $uri/ =404;
+  }
+
+  location /logo.png {
+    add_header Content-Disposition 'attachment; filename="logo.png"';
+  }
+
+  location /admin {
+    auth_basic "Área restringida";
+    auth_basic_user_file /etc/nginx/.htpasswd_admin;
+    try_files /admin.html =404; 
+  }
+
+  location /status {
+    proxy_pass http://localhost:19999;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+    auth_basic "Área restringida";
+    auth_basic_user_file /etc/nginx/.htpasswd_status;
+
+    location /status/api {
+        proxy_pass http://localhost:19999/api;
+    }
+  }
+
+  error_page 404 /404.html;
+
+  location /404.html {
+    root /var/www/mi_web/html;
+    internal;
+  }
+}

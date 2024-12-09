@@ -1,0 +1,35 @@
+body {
+    background-color: black;
+    color: #ff0000;
+    font-family: 'Courier New', Courier, monospace;
+    margin: 0;
+    padding: 0;
+}
+
+.error-container {
+    text-align: center;
+    margin-top: 20%;
+}
+
+h1 {
+    font-size: 3rem;
+    text-transform: uppercase;
+}
+
+p {
+    font-size: 1.5rem;
+}
+
+.hint {
+    color: #ffffff;
+    font-size: 1.2rem;
+}
+
+a {
+    color: #00ff00;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
