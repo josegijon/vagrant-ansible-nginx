@@ -5,11 +5,11 @@
 ¡Bienvenido al proyecto de Servidor Web con Nginx y Ansible en Vagrant!
 Este proyecto despliega un servidor web autogestionado utilizando tecnologías como Vagrant, Ansible, y Nginx. Incluye funcionalidades como:
 
--Autenticación básica para páginas protegidas.
--Generación de certificado proporcionado por Let's Encrypt.
--Túnel público con Ngrok para acceder desde cualquier lugar.
--Monitorización en tiempo real con Netdata.
--Pruebas de rendimiento.
+- Autenticación básica para páginas protegidas.
+- Generación de certificado proporcionado por Let's Encrypt.
+- Túnel público con Ngrok para acceder desde cualquier lugar.
+- Monitorización en tiempo real con Netdata.
+- Pruebas de rendimiento.
 
 Además, el servidor incluye páginas personalizadas, como una página principal, una de administración, y una página de error 404.
 
@@ -18,19 +18,25 @@ Además, el servidor incluye páginas personalizadas, como una página principal
 1. [Requisitos Previos](#1-requisitos-previos)
 2. [Estructura del Proyecto](#2-estructura-del-proyecto)
 3. [Tecnologías Utilizadas](#3-tecnologías-utilizadas)
-4. [Certificado proporcionado por Let's Encrypt](#4-certificado-proporcionado-por-let's-encrypt)
-   - [Instalar Certbot](#instalar-certbot)
-   - [Configurar el certificado SSL](#configurar-el-certificado-ssl)
-   - [Permitir HTTPS a través del firewall](#permitir-https-a-través-del-firewall)
-   - [Obtener el certificado SSL](#obtener-el-certificado-ssl)
-   - [Comprobación de Certificado](#comprobación-de-certificado)
+4. [Certificado proporcionado por Let's Encrypt](#4-certificado-proporcionado-por-lets-encrypt)
+    - [Instalar Certbot](#instalar-certbot)
+    - [Configurar el certificado SSL](#configurar-el-certificado-ssl)
+    - [Permitir HTTPS a través del firewall](#permitir-https-a-través-del-firewall)
+    - [Obtener el certificado SSL](#obtener-el-certificado-ssl)
+    - [Comprobación de Certificado](#comprobación-de-certificado)
 5. [Autenticación básica](#5-autenticación-básica)
-   - [Configuración en Ansible](#configuración-en-ansible)
-   - [Archivo de Configuración Nginx](#archivo-de-configuración-nginx)
-7. [Página de Error Personalizada](#6-página-de-error-personalizada)
-   - [Visualización de Netdata en /status](#visualización-de-netdata-en-/status)
-9. [Status del servidor](#7-status-del-servidor)
-10. [Pruebas de rendimiento](#8-pruebas-de-rendimiento)
+    - [Configuración en Ansible](#configuración-en-ansible)
+    - [Archivo de Configuración Nginx](#archivo-de-configuración-nginx)
+6. [Página de Error Personalizada](#6-página-de-error-personalizada)
+7. [Status del servidor](#7-status-del-servidor)
+    - [Instalación de Netdata en `/status`](#instalación-de-netdata-en-status)
+    - [Configuración de Ngnix para Netdata](#configuración-de-nginx-para-netdata)
+    - [Visualización de Netdata en `/status`](#visualización-de-netdata-en-status)
+8. [Pruebas de rendimiento](#8-pruebas-de-rendimiento)
+    - [Objetivos de las Pruebas](#objetivos-de-las-pruebas)
+    - [Parámetros de las Pruebas](#parámetros-de-las-pruebas)
+    - [Realización de las Pruebas](#realización-de-las-pruebas)
+    - [Especificación de los Comandos](#especifiación-de-los-comandos)
 
 ## 1. Requisitos previos
 
@@ -200,6 +206,37 @@ Una página de error personalizada es una forma de ofrecer una experiencia de us
 
 En un entorno de servidores web, es útil tener una página que permita visualizar el estado del servidor en tiempo real. Esto puede ser importante para monitorear el rendimiento, la carga del servidor, y otros indicadores clave de salud del sistema. En este proyecto, se ha implementado una página de status del servidor que muestra información relevante sobre el estado del servidor, como estadísticas de recursos y métricas del sistema.
 
+### Instalación de Netdata en /status
+
+``` main.yml
+- name: Install Netdata
+  shell: |
+    curl -sSL https://my-netdata.io/kickstart.sh | bash -s -- --dont-wait
+  args:
+    creates: /usr/sbin/netdata
+```
+
+### Configuración de Nginx para Netdata
+
+```
+  location /status {
+    proxy_pass http://localhost:19999;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+    auth_basic "Área restringida";
+    auth_basic_user_file /etc/nginx/.htpasswd_status;
+
+    location /status/api {
+        proxy_pass http://localhost:19999/api;
+    }
+  }
+```
+
 ### Visualización de Netdata en /status
 
 ![Status](./img/status1.png)
@@ -210,24 +247,24 @@ Una de las herramientas más sencillas y eficaces para realizar pruebas de rendi
 
 En este caso, realizaremos las pruebas de rendimiento desde un ordenador distinto al servidor web, utilizando dos configuraciones de carga diferentes:
 
--100 usuarios concurrentes con 1000 peticiones.
--1000 usuarios concurrentes con 10000 peticiones.
+- 100 usuarios concurrentes con 1000 peticiones.
+- 1000 usuarios concurrentes con 10000 peticiones.
 
 ### Objetivos de las Pruebas
 
 Se realizarán las pruebas sobre los siguientes recursos:
 
--Página principal: https://example.com/ (con SSL/TLS habilitado).
--Recurso estático: https://example.com/logo.png.
--Página de administración: https://example.com/admin/ (acceso con autenticación básica).
+- Página principal: `/`.
+- Recurso estático: `/logo.png`.
+- Página de administración: `/admin/` (acceso con autenticación básica).
 
-### Parámetros de la Prueba
+### Parámetros de las Pruebas
 
 Los parámetros que se utilizarán son los siguientes:
 
--k: Mantiene la conexión viva entre el cliente y el servidor, lo que permite reutilizar la misma conexión para múltiples solicitudes HTTP en lugar de abrir una nueva para cada una, mejorando la eficiencia.
+- k: Mantiene la conexión viva entre el cliente y el servidor, lo que permite reutilizar la misma conexión para múltiples solicitudes HTTP en lugar de abrir una nueva para cada una, mejorando la eficiencia.
 
--H "Accept-Encoding: gzip, deflate": Indica al servidor que se comprima la salida de datos. Esta cabecera permite que el servidor envíe los datos comprimidos, lo que puede reducir el tamaño de la respuesta y mejorar los tiempos de carga. Se estima que esta compresión puede reducir el tamaño de los datos de un 25% a un 75%.
+- H "Accept-Encoding: gzip, deflate": Indica al servidor que se comprima la salida de datos. Esta cabecera permite que el servidor envíe los datos comprimidos, lo que puede reducir el tamaño de la respuesta y mejorar los tiempos de carga. Se estima que esta compresión puede reducir el tamaño de los datos de un 25% a un 75%.
 
 ### Realización de las Pruebas
 
@@ -239,16 +276,35 @@ Los parámetros que se utilizarán son los siguientes:
 ab -n 1000 -c 100 -k https://albacore-select-marmoset.ngrok-free.app/
 ```
 
+##### Resultados
+
+![1000 100 raiz](./img/1000-100-raiz.png)
+
 2. Recurso estático (logo.png):
 
 ```bash
 ab -n 1000 -c 100 -k https://albacore-select-marmoset.ngrok-free.app/logo.png
 ```
 
+##### Resultados
+
+![1000 100 logo](./img/1000-100-logo.png)
+
 3. Página de administración (/admin):
+
 ```bash
 ab -n 1000 -c 100 -k -A sysadmin:risa https://albacore-select-marmoset.ngrok-free.app/admin/
 ```
+
+##### Resultados
+
+![1000 100 admin](./img/1000-100-admin.png)
+
+#### Conclusiones
+
+Como puntos positivos, el servidor maneja las solicitudes con tiempos de respuesta razonables en la mayoría de los casos, los recursos estáticos son entregados sin errores y la autenticación básica funciona correctamente sin afectar al rendimiento general.
+
+Como áreas de mejora, en la prueba inicial hay un alto número de fallos que nos sugiere problemas con la capacidad del servidor y tiempos elevados en la entrega de recursos estáticos.
 
 #### Para 1000 usuarios concurrentes y 10000 peticiones
 
@@ -258,19 +314,80 @@ ab -n 1000 -c 100 -k -A sysadmin:risa https://albacore-select-marmoset.ngrok-fre
 ab -n 10000 -c 1000 -k https://albacore-select-marmoset.ngrok-free.app/
 ```
 
+##### Resultados
+
+![10000 1000 raiz](./img/10000-1000-raiz.png)
+
 2. Recurso estático (logo.png):
 
 ```bash
 ab -n 10000 -c 1000 -k https://albacore-select-marmoset.ngrok-free.app/logo.png
 ```
 
+##### Resultados
+
+![10000 1000 logo](./img/10000-1000-logo.png)
+
 3. Página de administración (/admin):
+
 ```bash
 ab -n 10000 -c 1000 -k -A sysadmin:risa https://albacore-select-marmoset.ngrok-free.app/admin/
 ```
 
-En los comandos anteriores:
-    -n especifica el número total de peticiones que se realizarán (1000 o 10000).
-    -c establece el número de conexiones concurrentes (100 o 1000).
-    -k habilita la opción Keep-Alive, que mantiene abiertas las conexiones entre el cliente y el servidor.
-    -H "Accept-Encoding: gzip, deflate" agrega la cabecera que solicita la compresión de la respuesta del servidor.
+##### Resultados
+
+![10000 1000 admin](./img/10000-1000-admin.png)
+
+#### Conclusiones
+
+Como puntos positivos, el servidor muestra cierta capacidad para manejar tráfico concurrente. Los resultados de `/admin` demuestran tener un impacto limitado en el rendimiento general.
+
+Como áreas de mejora, tenemos un alto número de solicitudes fallidas en `/` y `/logo.png`, señal de que no puede manejar eficientemente picos de tráfico y los tiempos de respuesta son elevados. 
+
+Aumentar los recursos, como RAM o CPU, o usar técnicas de compresión y almacenamiento en caché serían buenas prácticas para reducir los cuellos de botella y mejorar el rendimiento del servidor.
+
+#### Para 1000 usuarios concurrentes y 10000 peticiones con cabecera
+
+1. Página principal:
+
+``` bash
+ab -n 1000 -c 100 -k -H "Accept-Encoding: gzip, deflate" https://albacore-select-marmoset.ngrok-free.app/
+```
+
+##### Resultados
+
+![1000 100 raiz cabecera](./img/1000-100-raiz-h.png)
+
+2. Recurso estático (logo.png):
+
+```bash
+ab -n 1000 -c 100 -k -H "Accept-Encoding: gzip, deflate" https://albacore-select-marmoset.ngrok-free.app/logo.png
+```
+
+##### Resultados
+
+![1000 100 logo cabecera](./img/1000-100-logo-h.png)
+
+3. Página de administración (/admin):
+
+```bash
+ab -n 1000 -c 100 -k -H "Accept-Encoding: gzip, deflate" -A sysadmin:risa https://albacore-select-marmoset.ngrok-free.app/admin/
+```
+
+##### Resultados
+
+![1000 100 admin cabecera](./img/1000-100-admin-h.png)
+
+#### Conclusiones
+
+Como puntos positivos, ninguna de las pruebas presentó solicitudes fallidas y la compresión mejoró los tiempos de respuesta y la eficiencia en los recursos estáticos como `/logo.png`.
+
+Como áreas de mejora, hay falta de contenido transferido en `/` y aunque hayan mejorado, los tiempos por solicitud siguen siendo muy altos.
+
+
+### Especifiación de los Comandos
+    
+- n especifica el número total de peticiones que se realizarán (1000 o 10000).
+- c establece el número de conexiones concurrentes (100 o 1000).
+- k habilita la opción Keep-Alive, que mantiene abiertas las conexiones entre el cliente y el servidor.
+- H "Accept-Encoding: gzip, deflate" agrega la cabecera que solicita la compresión de la respuesta del servidor.
