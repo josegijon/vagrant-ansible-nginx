@@ -29,23 +29,23 @@ Además, el servidor incluye páginas personalizadas, como una página principal
 7. [Status del servidor](#status-del-servidor)
 8. [Pruebas de rendimiento](#pruebas-de-rendimiento)
 
-## Requisitos previos
+## 1. Requisitos previos
 
 Antes de comenzar, asegúrate de tener instalado y configurado lo siguiente en tu máquina:
 
 ### VirtualBox:
 
-    -Versión recomendada: 7.0 o superior.
+-Versión recomendada: 7.0 o superior.
 
 ### Vagrant:
 
-    -Herramienta para gestionar máquinas virtuales.
+-Herramienta para gestionar máquinas virtuales.
 
 ### Conexión a Internet:
 
-    -Necesaria para descargar dependencias y realizar configuraciones automáticas.
+-Necesaria para descargar dependencias y realizar configuraciones automáticas.
 
-## Estructura del Proyecto
+## 2. Estructura del Proyecto
 
 ```bash
 vagrant-ansible-nginx/
@@ -64,29 +64,29 @@ vagrant-ansible-nginx/
 └── README.md
 ```
 
-## Tecnologías Utilizadas
+## 3. Tecnologías Utilizadas
 
 Este proyecto combina varias herramientas modernas para la automatización y el despliegue eficiente de un servidor web. A continuación, se enumeran:
 
-·Vagrant
+-Vagrant
     -Provisión de entornos virtuales portátiles.
 
-·Ansible
+-Ansible
     -Herramienta de automatización para la configuración y gestión de servidores.
 
-·Nginx
+-Nginx
     -Servidor web y proxy inverso de alto rendimiento.
 
-·Ngrok
+-Ngrok
     -Permite exponer el servidor local a través de un túnel seguro accesible desde cualquier parte del mundo.
 
-·Let's Encrypt
+-Let's Encrypt
     -Generación de certificados SSL gratuitos para asegurar la conexión HTTPS.
 
-·Netdata
+-Netdata
     -Sistema de monitorización en tiempo real para recursos del servidor.
 
-## Certificado proporcionado por Let's Encrypt
+## 4. Certificado proporcionado por Let's Encrypt
 
 ### Instalar Certbot
 
@@ -134,14 +134,14 @@ En el navegador, debemos comprobar el emisor del certificado:
 
 ![Certificado Let's Encrypt](./img/lets-encrypt.png)
 
-## Autenticación Básica
+## 5. Autenticación Básica
 
 La autenticación básica en este servidor está configurada a través de archivos .htpasswd y se utiliza para proteger áreas específicas de la web, como el panel de administración y el estado del servidor.
 
 En este caso, se ha configurado para las siguientes rutas:
 
-    -/admin: Un área de administración protegida.
-    -/status: Una página de estado del servidor.
+-/admin: Un área de administración protegida.
+-/status: Una página de estado del servidor.
 
 ### Configuración en Ansible
 
@@ -187,13 +187,13 @@ En el archivo de configuración de Nginx, /etc/nginx/sites-available/mi_web, se 
   }
 ```
 
-## Página de Error Personalizada
+## 6. Página de Error Personalizada
 
 Una página de error personalizada es una forma de ofrecer una experiencia de usuario más amigable y controlada cuando algo no sale como se esperaba. En este proyecto, hemos configurado una página de error personalizada para el código HTTP 404 (página no encontrada). De esta manera, si un usuario intenta acceder a una página que no existe en el servidor, en lugar de mostrar una página de error estándar del servidor, se le mostrará una página de error diseñada especialmente para ello.
 
 ![Error 404](./img/error404.png)
 
-## Status del servidor
+## 7. Status del servidor
 
 En un entorno de servidores web, es útil tener una página que permita visualizar el estado del servidor en tiempo real. Esto puede ser importante para monitorear el rendimiento, la carga del servidor, y otros indicadores clave de salud del sistema. En este proyecto, se ha implementado una página de status del servidor que muestra información relevante sobre el estado del servidor, como estadísticas de recursos y métricas del sistema.
 
@@ -201,30 +201,30 @@ En un entorno de servidores web, es útil tener una página que permita visualiz
 
 ![Status](./img/status1.png)
 
-## Pruebas de Rendimiento
+## 8. Pruebas de Rendimiento
 
 Una de las herramientas más sencillas y eficaces para realizar pruebas de rendimiento en un servidor web es ApacheBench (ab). Esta herramienta permite simular múltiples usuarios concurrentes y medir el rendimiento de la respuesta del servidor bajo diferentes cargas.
 
 En este caso, realizaremos las pruebas de rendimiento desde un ordenador distinto al servidor web, utilizando dos configuraciones de carga diferentes:
 
-    -100 usuarios concurrentes con 1000 peticiones.
-    -1000 usuarios concurrentes con 10000 peticiones.
+-100 usuarios concurrentes con 1000 peticiones.
+-1000 usuarios concurrentes con 10000 peticiones.
 
 ### Objetivos de las Pruebas
 
 Se realizarán las pruebas sobre los siguientes recursos:
 
-    -Página principal: https://example.com/ (con SSL/TLS habilitado).
-    -Recurso estático: https://example.com/logo.png.
-    -Página de administración: https://example.com/admin/ (acceso con autenticación básica).
+-Página principal: https://example.com/ (con SSL/TLS habilitado).
+-Recurso estático: https://example.com/logo.png.
+-Página de administración: https://example.com/admin/ (acceso con autenticación básica).
 
 ### Parámetros de la Prueba
 
 Los parámetros que se utilizarán son los siguientes:
 
-    -k: Mantiene la conexión viva entre el cliente y el servidor, lo que permite reutilizar la misma conexión para múltiples solicitudes HTTP en lugar de abrir una nueva para cada una, mejorando la eficiencia.
+-k: Mantiene la conexión viva entre el cliente y el servidor, lo que permite reutilizar la misma conexión para múltiples solicitudes HTTP en lugar de abrir una nueva para cada una, mejorando la eficiencia.
 
-    -H "Accept-Encoding: gzip, deflate": Indica al servidor que se comprima la salida de datos. Esta cabecera permite que el servidor envíe los datos comprimidos, lo que puede reducir el tamaño de la respuesta y mejorar los tiempos de carga. Se estima que esta compresión puede reducir el tamaño de los datos de un 25% a un 75%.
+-H "Accept-Encoding: gzip, deflate": Indica al servidor que se comprima la salida de datos. Esta cabecera permite que el servidor envíe los datos comprimidos, lo que puede reducir el tamaño de la respuesta y mejorar los tiempos de carga. Se estima que esta compresión puede reducir el tamaño de los datos de un 25% a un 75%.
 
 ### Realización de las Pruebas
 
