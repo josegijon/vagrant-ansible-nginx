@@ -9,6 +9,7 @@ body {
 .container {
     text-align: center;
     margin-top: 20%;
+    padding: 0 2rem;
 }
 
 h1 {
@@ -20,7 +21,9 @@ p {
 }
 
 .button-container {
-    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    padding-top: 2rem;
 }
 
 .button {
@@ -42,6 +45,11 @@ p {
 
 .admin-image {
     width: 80%;
-    height: auto;
-    
+    height: auto;   
+}
+
+@media screen and (max-width: 678px) {
+    .button-container {
+        flex-direction: column;
+    }
 }
