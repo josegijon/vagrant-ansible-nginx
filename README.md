@@ -68,23 +68,23 @@ vagrant-ansible-nginx/
 
 Este proyecto combina varias herramientas modernas para la automatización y el despliegue eficiente de un servidor web. A continuación, se enumeran:
 
-    ·Vagrant
-        -Provisión de entornos virtuales portátiles.
+·Vagrant
+    -Provisión de entornos virtuales portátiles.
 
-    ·Ansible
-        -Herramienta de automatización para la configuración y gestión de servidores.
+·Ansible
+    -Herramienta de automatización para la configuración y gestión de servidores.
 
-    ·Nginx
-        -Servidor web y proxy inverso de alto rendimiento.
+·Nginx
+    -Servidor web y proxy inverso de alto rendimiento.
 
-    ·Ngrok
-        -Permite exponer el servidor local a través de un túnel seguro accesible desde cualquier parte del mundo.
+·Ngrok
+    -Permite exponer el servidor local a través de un túnel seguro accesible desde cualquier parte del mundo.
 
-    ·Let's Encrypt
-        -Generación de certificados SSL gratuitos para asegurar la conexión HTTPS.
+·Let's Encrypt
+    -Generación de certificados SSL gratuitos para asegurar la conexión HTTPS.
 
-    ·Netdata
-        -Sistema de monitorización en tiempo real para recursos del servidor.
+·Netdata
+    -Sistema de monitorización en tiempo real para recursos del servidor.
 
 ## Certificado proporcionado por Let's Encrypt
 
