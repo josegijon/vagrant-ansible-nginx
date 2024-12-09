@@ -5,11 +5,11 @@
 ¡Bienvenido al proyecto de Servidor Web con Nginx y Ansible en Vagrant!
 Este proyecto despliega un servidor web autogestionado utilizando tecnologías como Vagrant, Ansible, y Nginx. Incluye funcionalidades como:
 
-    -Autenticación básica para páginas protegidas.
-    -Generación de certificado proporcionado por Let's Encrypt.
-    -Túnel público con Ngrok para acceder desde cualquier lugar.
-    -Monitorización en tiempo real con Netdata.
-    -Pruebas de rendimiento.
+-Autenticación básica para páginas protegidas.
+-Generación de certificado proporcionado por Let's Encrypt.
+-Túnel público con Ngrok para acceder desde cualquier lugar.
+-Monitorización en tiempo real con Netdata.
+-Pruebas de rendimiento.
 
 Además, el servidor incluye páginas personalizadas, como una página principal, una de administración, y una página de error 404.
 
