@@ -25,9 +25,12 @@ Además, el servidor incluye páginas personalizadas, como una página principal
    - [Obtener el certificado SSL](#obtener-el-certificado-ssl)
    - [Comprobación de Certificado](#comprobación-de-certificado)
 5. [Autenticación básica](#5-autenticación-básica)
-6. [Página de Error Personalizada](#6-página-de-error-personalizada)
-7. [Status del servidor](#7-status-del-servidor)
-8. [Pruebas de rendimiento](#8-pruebas-de-rendimiento)
+   - [Configuración en Ansible](#configuración-en-ansible)
+   - [Archivo de Configuración Nginx](#archivo-de-configuración-nginx)
+7. [Página de Error Personalizada](#6-página-de-error-personalizada)
+   - [Visualización de Netdata en /status](#visualización-de-netdata-en-/status)
+9. [Status del servidor](#7-status-del-servidor)
+10. [Pruebas de rendimiento](#8-pruebas-de-rendimiento)
 
 ## 1. Requisitos previos
 
