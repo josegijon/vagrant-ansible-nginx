@@ -15,19 +15,19 @@ Además, el servidor incluye páginas personalizadas, como una página principal
 
 ## Tabla de contenidos:
 
-1. [Requisitos Previos](#1.requisitos-previos)
-2. [Estructura del Proyecto](#2.estructura-del-proyecto)
-3. [Tecnologías Utilizadas](#3.tecnologías-utilizadas)
-4. [Certificado proporcionado por Let's Encrypt](#4.certificado-proporcionado-por-let's-encrypt)
+1. [Requisitos Previos](#1-requisitos-previos)
+2. [Estructura del Proyecto](#2-estructura-del-proyecto)
+3. [Tecnologías Utilizadas](#3-tecnologías-utilizadas)
+4. [Certificado proporcionado por Let's Encrypt](#4-certificado-proporcionado-por-let's-encrypt)
    - [Instalar Certbot](#instalar-certbot)
    - [Configurar el certificado SSL](#configurar-el-certificado-ssl)
    - [Permitir HTTPS a través del firewall](#permitir-https-a-través-del-firewall)
    - [Obtener el certificado SSL](#obtener-el-certificado-ssl)
    - [Comprobación de Certificado](#comprobación-de-certificado)
-5. [Autenticación básica](#5.autenticación-básica)
-6. [Página de Error Personalizada](#6.página-de-error-personalizada)
-7. [Status del servidor](#7.status-del-servidor)
-8. [Pruebas de rendimiento](#8.pruebas-de-rendimiento)
+5. [Autenticación básica](#5-autenticación-básica)
+6. [Página de Error Personalizada](#6-página-de-error-personalizada)
+7. [Status del servidor](#7-status-del-servidor)
+8. [Pruebas de rendimiento](#8-pruebas-de-rendimiento)
 
 ## 1. Requisitos previos
 
