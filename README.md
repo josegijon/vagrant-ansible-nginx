@@ -44,15 +44,15 @@ Antes de comenzar, asegúrate de tener instalado y configurado lo siguiente en t
 
 ### VirtualBox:
 
--Versión recomendada: 7.0 o superior.
+- Versión recomendada: 7.0 o superior.
 
 ### Vagrant:
 
--Herramienta para gestionar máquinas virtuales.
+- Herramienta para gestionar máquinas virtuales.
 
 ### Conexión a Internet:
 
--Necesaria para descargar dependencias y realizar configuraciones automáticas.
+- Necesaria para descargar dependencias y realizar configuraciones automáticas.
 
 ## 2. Estructura del Proyecto
 
@@ -77,23 +77,23 @@ vagrant-ansible-nginx/
 
 Este proyecto combina varias herramientas modernas para la automatización y el despliegue eficiente de un servidor web. A continuación, se enumeran:
 
--Vagrant
-    -Provisión de entornos virtuales portátiles.
+- Vagrant
+    - Provisión de entornos virtuales portátiles.
 
--Ansible
-    -Herramienta de automatización para la configuración y gestión de servidores.
+- Ansible
+    - Herramienta de automatización para la configuración y gestión de servidores.
 
--Nginx
-    -Servidor web y proxy inverso de alto rendimiento.
+- Nginx
+    - Servidor web y proxy inverso de alto rendimiento.
 
--Ngrok
-    -Permite exponer el servidor local a través de un túnel seguro accesible desde cualquier parte del mundo.
+- Ngrok
+    - Permite exponer el servidor local a través de un túnel seguro accesible desde cualquier parte del mundo.
 
--Let's Encrypt
-    -Generación de certificados SSL gratuitos para asegurar la conexión HTTPS.
+- Let's Encrypt
+    - Generación de certificados SSL gratuitos para asegurar la conexión HTTPS.
 
--Netdata
-    -Sistema de monitorización en tiempo real para recursos del servidor.
+- Netdata
+    - Sistema de monitorización en tiempo real para recursos del servidor.
 
 ## 4. Certificado proporcionado por Let's Encrypt
 
@@ -149,8 +149,8 @@ La autenticación básica en este servidor está configurada a través de archiv
 
 En este caso, se ha configurado para las siguientes rutas:
 
--/admin: Un área de administración protegida.
--/status: Una página de estado del servidor.
+- /admin: Un área de administración protegida.
+- /status: Una página de estado del servidor.
 
 ### Configuración en Ansible
 
